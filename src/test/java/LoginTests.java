@@ -1,27 +1,41 @@
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
-
 public class LoginTests extends BaseTest {
+
+    private final By email = By.id("email");
+    private final By password = By.id("password");
+    private final By submit = By.cssSelector("button[type='submit']");
+    private final By errorBanner = By.cssSelector("[data-test='login-error'], .error, .alert-danger");
+    private final By dashboardMarker = By.cssSelector("[data-test='dashboard'], .dashboard, .user-avatar");
+
     @Test
-    public void loginEmptyEmailPassword() {
+    public void loginPositive_correctCreds() {
+        getDriver().findElement(email).sendKeys(System.getProperty("validEmail", System.getenv("TEST_EMAIL")));
+        getDriver().findElement(password).sendKeys(System.getProperty("validPassword", System.getenv("TEST_PASSWORD")));
+        getDriver().findElement(submit).click();
+        Assert.assertTrue(getDriver().findElement(dashboardMarker).isDisplayed(), "Dashboard should appear.");
+    }
 
-//      Added ChromeOptions argument below to fix websocket error
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
+    @Test
+    public void loginNegative_wrongPassword() {
+        getDriver().findElement(email).sendKeys(System.getProperty("validEmail", System.getenv("TEST_EMAIL")));
+        getDriver().findElement(password).sendKeys("WrongPass!123");
+        getDriver().findElement(submit).click();
+        String err = getDriver().findElement(errorBanner).getText().toLowerCase();
+        Assert.assertTrue(err.contains("invalid") || err.contains("incorrect") || err.contains("wrong"),
+                "Expected invalid password message. Actual: " + err);
+    }
 
-        WebDriver driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-        // TODO (for students): Review the configuration as part of HW15
-
-        String url = "httpps://qa.koel.app/";
-        driver.get(url);
-        Assert.assertEquals(driver.getCurrentUrl(), url);
-        driver.quit();
+    @Test
+    public void loginNegative_wrongEmail() {
+        getDriver().findElement(email).sendKeys("nope+" + System.currentTimeMillis() + "@example.com");
+        getDriver().findElement(password).sendKeys(System.getProperty("validPassword", System.getenv("TEST_PASSWORD")));
+        getDriver().findElement(submit).click();
+        String err = getDriver().findElement(errorBanner).getText().toLowerCase();
+        Assert.assertTrue(err.contains("invalid") || err.contains("not found") || err.contains("unrecognized") || err.contains("wrong"),
+                "Expected user-not-found/invalid email message. Actual: " + err);
     }
 }
+

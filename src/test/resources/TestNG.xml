@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="HW25" parallel="methods" thread-count="3">
+    <parameter name="BaseURL" value="https://qa.koel.app/login"/>
 
-<suite name="TestNG">
-
-    <test name="Example Test" preserve-order="false">
+    <test name="Cloud_Chrome">
+        <parameter name="Browser" value="chrome"/>
+        <parameter name="Target" value="cloud"/>
         <classes>
             <class name="LoginTests"/>
-            <class name="BaseTest"/>
         </classes>
     </test>
 </suite>
