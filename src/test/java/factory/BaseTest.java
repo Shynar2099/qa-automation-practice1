@@ -1,11 +1,10 @@
 // package your.package;
+package factory;
 
-import factory.BrowserFactory; // if you have one; else use pickBrowser below
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,6 +16,7 @@ import org.testng.annotations.Parameters;
 import java.time.Duration;
 
 public class BaseTest {
+
 
     private static final ThreadLocal<WebDriver> TL = new ThreadLocal<>();
 
@@ -57,17 +57,17 @@ public class BaseTest {
         }
 
 // Wait for the login form's email field
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("email")));
-
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[type='email']")));
     }
 
     @AfterMethod(alwaysRun = true)
     public void teardown(ITestResult result) {
         try {
             WebDriver d = getDriver();
-            if (d instanceof JavascriptExecutor js) {
-                js.executeScript("lambda-status=" + (result.isSuccess() ? "passed" : "failed"));
-            }
+         //   if (d instanceof JavascriptExecutor js) {
+          //      js.executeScript("lambda-status=" + (result.isSuccess() ? "passed" : "failed"));
+         //   }
             if (d != null) d.quit();         // quit, not close
         } finally {
             unloadDriver();                  // clear ThreadLocal
