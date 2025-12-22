@@ -10,7 +10,7 @@
 
         <classes>
             <!-- package name + class name -->
-            <class name="tests.UpdateEmailTest"/>
+            <class name="tests.ArtistsSongsListTest"/>
         </classes>
     </test>
 
