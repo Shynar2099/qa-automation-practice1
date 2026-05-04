@@ -1,4 +1,4 @@
-plugins {
+grplugins {
     id 'java'
 }
 
